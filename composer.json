@@ -3,6 +3,7 @@
     "description": "Materialize plugin for CakePHP",
     "type": "cakephp-plugin",
     "license": "MIT",
+    "version": "1.0",
     "require": {
         "cakephp/cakephp": "^3.4"
     },
