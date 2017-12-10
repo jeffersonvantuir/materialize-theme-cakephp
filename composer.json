@@ -1,9 +1,19 @@
 {
-    "name": "your-name-here/materialize-theme-cakephp",
+    "name": "jeffersonbehling/materialize-theme-cakephp",
     "description": "Materialize plugin for CakePHP",
     "type": "cakephp-plugin",
     "license": "MIT",
     "version": "1.0",
+    "authors": [
+        {
+            "name": "Jefferson Vantuir",
+            "homepage": "https://jeffersonbehling.github.io/",
+            "role": "Author"
+        }
+    ],
+    "config": {
+        "preferred-install": "src"
+    },
     "require": {
         "cakephp/cakephp": "^3.4"
     },
