@@ -5,7 +5,7 @@
 
 Dentro do seu projeto, execute:
 ```
-composer require jeffersonbehling/materialize-theme-cakephp
+composer require jeffersonbehling/materialize-theme-cakephp:dev-master
 ```
 
 No arquivo `config/bootstrap.php` adicione:
