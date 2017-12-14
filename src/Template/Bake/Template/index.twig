@@ -19,25 +19,12 @@
  * @var \{{ entityClass }}[]|\Cake\Collection\CollectionInterface ${{ pluralVar }}
  */
 ?>
+<div class="hide">
+    <?= $this->layout = "Materialize.materialize"; ?>
+</div>
 {% set fields = Bake.filterFields(fields, schema, modelObject, indexColumns, ['binary', 'text']) %}
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('New {{ singularHumanName }}'), ['action' => 'add']) ?></li>
-{% set done = [] %}
-{% for type, data in associations %}
-{% for alias, details in data %}
-{% if details.navLink and details.controller is not same as(_view.name) and details.controller not in done %}
-        <li><?= $this->Html->link(__('List {{ alias|underscore|humanize }}'), ['controller' => '{{ details.controller }}', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New {{ alias|singularize|underscore|humanize }}'), ['controller' => '{{ details.controller }}', 'action' => 'add']) ?></li>
-{% set done = done|merge([details.controller]) %}
-{% endif %}
-{% endfor %}
-{% endfor %}
-    </ul>
-</nav>
 <div class="{{ pluralVar }} index large-9 medium-8 columns content">
-    <h3><?= __('{{ pluralHumanName }}') ?></h3>
+    <h3 class="black-easy"><?= __('{{ pluralHumanName }}') ?></h3>
     <table class="striped">
         <thead>
             <tr>
@@ -69,15 +56,15 @@
 {% endfor %}
 {% set pk = '$' ~ singularVar ~ '->' ~ primaryKey[0] %}
                 <td class="actions">
-                    <?= $this->Html->link(__('View'), ['action' => 'view', {{ pk|raw }}]) ?>
-                    <?= $this->Html->link(__('Edit'), ['action' => 'edit', {{ pk|raw }}]) ?>
-                    <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', {{ pk|raw }}], ['confirm' => __('Are you sure you want to delete # {0}?', {{ pk|raw }})]) ?>
+                    <?= $this->Html->link('<i class="material-icons" title="'. __('View') . '" >zoom_in</i>', ['action' => 'view', {{ pk|raw }}], ['escape' => false]) ?>
+                    <?= $this->Html->link('<i class="material-icons" title="'. __('Edit') . '" >create</i>', ['action' => 'edit', {{ pk|raw }}], ['escape' => false]) ?>
+                    <?= $this->Form->postLink('<i class="material-icons" title="'. __('Delete') . '" >delete</i>', ['action' => 'delete', {{ pk|raw }}], ['confirm' => __('Are you sure you want to delete # {0}?', {{ pk|raw }}), 'escape' => false]) ?>
                 </td>
             </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
-    <div class="paginator">
+    <div class="center">
         <ul class="pagination">
             <?= $this->Paginator->first('<< ' . __('first')) ?>
             <?= $this->Paginator->prev('< ' . __('previous')) ?>

@@ -19,6 +19,9 @@
  * @var \{{ entityClass }} ${{ singularVar }}
  */
 ?>
+<div class="hide">
+    <?= $this->layout = "Materialize.materialize"; ?>
+</div>
 {% set associations = {'BelongsTo': [], 'HasOne': [], 'HasMany': [], 'BelongsToMany': []}|merge(associations) %}
 {% set fieldsData = Bake.getViewFieldsData(fields, schema, associations) %}
 {% set associationFields = fieldsData.associationFields %}

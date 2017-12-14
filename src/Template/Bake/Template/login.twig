@@ -18,6 +18,9 @@
  * @var \{{ namespace }}\View\AppView $this
  */
 ?>
+<div class="hide">
+    <?= $this->layout = "Materialize.materialize"; ?>
+</div>
 <div class="{{ pluralVar }} form">
 <?= $this->Flash->render('auth') ?>
     <?= $this->Form->create() ?>
