@@ -3,82 +3,85 @@
 </div>
 
 {% set fields = Bake.filterFields(fields, schema, modelObject) %}
+
 <div class="row">
-    <form class="col s12">
-        <div class="row">
-            <div class="input-field col s6">
-                <input placeholder="Placeholder" id="first_name" type="text" class="validate">
-                <label for="first_name">First Name</label>
-            </div>
-            <div class="input-field col s6">
-                <input id="last_name" type="text" class="validate">
-                <label for="last_name">Last Name</label>
-            </div>
-        </div>
-        <div class="row">
-            <div class="input-field col s12">
-                <input disabled value="I am not editable" id="disabled" type="text" class="validate">
-                <label for="disabled">Disabled</label>
-            </div>
-        </div>
-        <div class="row">
-            <div class="input-field col s12">
-                <input id="password" type="password" class="validate">
-                <label for="password">Password</label>
-            </div>
-        </div>
-        <div class="row">
-            <div class="input-field col s12">
-                <input id="email" type="email" class="validate">
-                <label for="email">Email</label>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col s12">
-                This is an inline input field:
-                <div class="input-field inline">
-                    <input id="email" type="email" class="validate">
-                    <label for="email" data-error="wrong" data-success="right">Email</label>
-                </div>
-            </div>
-        </div>
-    </form>
-</div>
-<div class="{{ pluralVar }} form large-9 medium-8 columns content">
-    <?= $this->Form->create(${{ singularVar }}) ?>
-    <fieldset>
-        <legend><?= __('{{ action|humanize }} {{ singularHumanName }}') ?></legend>
-        <?php
-{% for field in fields if field not in primaryKey %}
+    <div class="col s12 m4 l3 nav-margin">
+        <b class="collapsible-header red-text darken-4">Actions</b>
+        <ul>
+{% if strpos(action, 'add') is same as(false) %}
+            <li><?= $this->Form->postLink(
+                __('Delete'),
+                ['action' => 'delete', ${{ singularVar }}->{{ primaryKey[0] }}],
+                ['confirm' => __('Are you sure you want to delete # {0}?', ${{ singularVar }}->{{ primaryKey[0] }})]
+                )
+                ?></li>
+    {% endif %}
+            <li><?= $this->Html->link(__('List {{ pluralHumanName }}'), ['action' => 'index']) ?></li>
+{{- "\n" }}
+{%- set done = [] %}
+{% for type, data in associations %}
+    {%- for alias, details in data %}
+        {%- if details.controller is not same as(_view.name) and details.controller not in done %}
+            <li><?= $this->Html->link(__('List {{ alias|underscore|humanize }}'), ['controller' => '{{ details.controller }}', 'action' => 'index']) ?></li>
+            <li><?= $this->Html->link(__('New {{ alias|singularize|underscore|humanize }}'), ['controller' => '{{ details.controller }}', 'action' => 'add']) ?></li>
+            {{- "\n" }}
+            {%- set done = done|merge([details.controller]) %}
+        {%- endif %}
+    {%- endfor %}
+{% endfor %}
+        </ul>
+    </div>
+
+    <div class="col s12 m8 l6">
+        <?= $this->Form->create(${{ singularVar }}) ?>
+        <h3><?= __('{{ action|humanize }} {{ singularHumanName }}') ?></h3>
+    {% for field in fields if field not in primaryKey %}
     {%- if keyFields[field] %}
         {%- set fieldData = Bake.columnData(field, schema) %}
         {%- if fieldData.null %}
-            echo $this->Form->control('{{ field }}', ['options' => ${{ keyFields[field] }}, 'empty' => true]);
-            {{- "\n" }}
-        {%- else %}
-            echo $this->Form->control('{{ field }}', ['options' => ${{ keyFields[field] }}]);
-            {{- "\n" }}
+        <?= $this->Form->control('{{ field }}', ['options' => ${{ keyFields[field] }}, 'empty' => true]) ?>
+        {{- "\n" }}
+    {%- else %}
+        <?= $this->Form->control('{{ field }}', ['options' => ${{ keyFields[field] }}]) ?>
+        <?= $this->Form->control('{{ field }}', ['options' => ${{ keyFields[field] }}]) ?>
+        {{- "\n" }}
         {%- endif %}
     {%- elseif field not in ['created', 'modified', 'updated'] %}
         {%- set fieldData = Bake.columnData(field, schema) %}
         {%- if fieldData.type in ['date', 'datetime', 'time'] and fieldData.null %}
-            echo $this->Form->control('{{ field }}', ['empty' => true]);
-            {{- "\n" }}
-        {%- else %}
-            echo $this->Form->control('{{ field }}');
+    {% if fieldData.type == 'date' %}
+        <div class="col s8">
+            <?= $this->Form->control('{{ field }}', ['type' => 'text', 'class' => 'datepicker']) ?>
+        </div>
+    {% elseif fieldData.type == 'time' %}
+        <div class="col s8">
+            <?= $this->Form->control('{{ field }}', ['type' => 'text', 'class' => 'timepicker']) ?>
+        </div>
+    {%- else %}
+        <div class="col s8">
+            <?= $this->Form->control('{{ field }}', ['empty' => true]) ?>
+        </div>
     {{- "\n" }}
         {%- endif %}
-    {%- endif %}
-{%- endfor %}
-
-{%- if associations.BelongsToMany %}
-    {%- for assocName, assocData in associations.BelongsToMany %}
-            echo $this->Form->control('{{ assocData.property }}._ids', ['options' => ${{ assocData.variable }}]);
-    {{- "\n" }}
-    {%- endfor %}
-{% endif %}
-        ?>
-    </fieldset>
-    <?= $this->Form->button(__('Submit')) ?>
-    <?= $this->Form->end() ?>
+        {%- else %}
+        <div class="input-field col s8">
+            <?= $this->Form->control('{{ field }}') ?>
+        </div>
+        {{- "\n" }}
+        {%- endif %}
+        {%- endif %}
+        {%- endfor %}
+        {%- if associations.BelongsToMany %}
+            {%- for assocName, assocData in associations.BelongsToMany %}
+        <div class="col s8">
+            <?= $this->Form->control('{{ assocData.property }}._ids', ['options' => ${{ assocData.variable }}]) ?>
+        {{- "\n" }}
+        </div>
+        {{- "\n" }}
+        {%- endfor %}
+        {% endif %}
+        {{- "\n" }}
+        <?= $this->Form->button(__('Submit')) ?>
+        <?= $this->Form->end() ?>
+    </div>
 </div>

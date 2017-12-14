@@ -1,16 +1,8 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- *
- * Licensed under The MIT License
- * For full copyright and license information, please see the LICENSE.txt
- * Redistributions of files must retain the above copyright notice.
- *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
- * @since         0.10.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * Created by Jefferson Vantuir
+ * https://jeffersonbehling.github.io/
+ * jefferson.behling@gmail.com
  */
 
 $cakeDescription = 'Materialize Theme CakePHP 3.x';
@@ -26,12 +18,8 @@ $cakeDescription = 'Materialize Theme CakePHP 3.x';
         <?= $this->fetch('title') ?>
     </title>
     <?= $this->Html->meta('icon') ?>
-    <!--Import Google Icon Font-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <!--Import materialize.css-->
     <?= $this->Html->css('Materialize.materialize.min.css') ?>
-
-    <!--Let browser know website is optimized for mobile-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
 
@@ -53,10 +41,39 @@ $cakeDescription = 'Materialize Theme CakePHP 3.x';
         </div>
     </nav>
     <?= $this->Flash->render() ?>
-    <div class="container clearfix">
+    <div class="clearfix">
         <?= $this->fetch('content') ?>
     </div>
     <footer>
     </footer>
 </body>
 </html>
+<script>
+    $(document).ready(function() {
+        $('select').material_select();
+    });
+
+    $('.datepicker').pickadate({
+        selectMonths: false, // Creates a dropdown to control month
+        selectYears: 200, // Creates a dropdown of 15 years to control year,
+        today: "<?= __('Today') ?>",
+        clear: "<?= __('Clear') ?>",
+        close: 'Ok',
+        closeOnSelect: true, // Close upon selecting a date,
+        format: 'dd/mm/yyyy'
+    });
+
+    $('.timepicker').pickatime({
+        default: 'now', // Set default time: 'now', '1:30AM', '16:30'
+        fromnow: 0,       // set default time to * milliseconds from now (using with default = 'now')
+        twelvehour: false, // Use AM/PM or 24-hour format
+        donetext: 'OK', // text for done-button
+        cleartext: 'Clear', // text for clear-button
+        canceltext: 'Cancel', // Text for cancel-button
+        format: "HH:ii",
+        autoclose: false, // automatic close timepicker
+        ampmclickable: true, // make AM PM clickable
+        aftershow: function(){} //Function for after opening timepicker
+    });
+
+</script>

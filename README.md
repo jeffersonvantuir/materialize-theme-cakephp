@@ -5,7 +5,7 @@
 
 Dentro do seu projeto, execute:
 ```
-composer require jeffersonbehling/materialize-theme-cakephp:dev-master
+composer require jeffersonbehling/materialize-theme-cakephp
 ```
 
 No arquivo `config/bootstrap.php` adicione:
@@ -13,6 +13,8 @@ No arquivo `config/bootstrap.php` adicione:
 Plugin::load('Materialize', ['bootstrap' => false, 'routes' => false]);
 ```
 
+
+Para definir o Materialize como tema padrão, adicione em `config/bootstrap.php`
 ```
 Configure::write('Bake.theme', 'Materialize');
 ```
