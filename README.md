@@ -1,4 +1,4 @@
-# Materialize theme default for CakePHP
+# Materialize CSS theme default for CakePHP
 
 ## *************** Em processo de Desenvolvimento ***************
 
