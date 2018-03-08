@@ -14,21 +14,21 @@
  */
 #}
 <?php
+namespace {{ namespace }}\Controller\Component;
+
+use Cake\Controller\Component;
+use Cake\Controller\ComponentRegistry;
+
 /**
- * @var \{{ namespace }}\View\AppView $this
+ * {{ name }} component
  */
-?>
-<div class="hide">
-    <?= $this->layout = "Materialize.materialize"; ?>
-</div>
-<div class="{{ pluralVar }} form">
-<?= $this->Flash->render('auth') ?>
-    <?= $this->Form->create() ?>
-    <fieldset>
-        <legend><?= __('Please enter your username and password') ?></legend>
-        <?= $this->Form->control('username') ?>
-        <?= $this->Form->control('password') ?>
-    </fieldset>
-    <?= $this->Form->button(__('Login')); ?>
-    <?= $this->Form->end() ?>
-</div>
+class {{ name }}Component extends Component
+{
+
+    /**
+     * Default configuration.
+     *
+     * @var array
+     */
+    protected $_defaultConfig = [];
+}
