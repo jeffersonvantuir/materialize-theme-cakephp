@@ -24,10 +24,25 @@ Configure::write('Bake.theme', 'Materialize');
 
 ## Utilização
 
-Ao executar o `bake`, adicione `--theme Materialize`.
+Se for definir o Materialize como Tema Padrão, apenas precise utilizar
+
+```
+bin/cake bake all sua_tabela
+```
+Caso contrário, adicione `--theme Materialize` ao comando `bake`.
 
 Exemplo:
 
 ```
-bin/cake bake template sua_tabela --theme Materialize
+bin/cake bake all sua_tabela --theme Materialize
+```
+
+Se for gerar apenas o `bake` para gerar os TEMPLATES, deverá adicionar na sua Controller o seguinte código.
+
+```
+public function beforeRender(Event $event)
+{
+    parent::beforeRender($event);
+    $this->viewBuilder()->setHelpers(['Materialize.Form']);
+}
 ```
