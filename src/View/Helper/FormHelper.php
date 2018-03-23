@@ -106,7 +106,7 @@ class FormHelper extends Helper\FormHelper
             // Submit input element.
             'inputSubmit' => '<input type="{{type}}"{{attrs}}/>',
             // Container element used by control().
-            'inputContainer' => '<div class="input {{type}}{{required}}">{{content}}</div>',
+            'inputContainer' => '{{content}}',
             // Container element used by control() when a field has an error.
             'inputContainerError' => '<div class="input {{type}}{{required}} error">{{content}}{{error}}</div>',
             // Label element when inputs are not nested inside the label.
