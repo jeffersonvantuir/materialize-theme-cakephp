@@ -1357,6 +1357,7 @@ class FormHelper extends Helper\FormHelper
 
         if (!isset($options['required']) && $options['type'] !== 'hidden') {
             $options['required'] = $context->isRequired($fieldName);
+            $options['class'] = 'validate';
         }
 
         $type = $context->type($fieldName);
@@ -1485,6 +1486,10 @@ class FormHelper extends Helper\FormHelper
         }
         if (isset($options['escape'])) {
             $labelAttributes['escape'] = $options['escape'];
+        }
+
+        if ($options['required']) {
+            $labelAttributes['data-error'] = __('This field is required');
         }
 
         return $this->label($fieldName, $labelText, $labelAttributes);

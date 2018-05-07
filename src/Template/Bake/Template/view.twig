@@ -18,155 +18,188 @@
 * @var \{{ namespace }}\View\AppView $this
 * @var \{{ entityClass }} ${{ singularVar }}
 */
+$this->layout = "Soils.soils";
+
 ?>
-<div class="hide">
-    <?= $this->layout = "Materialize.materialize"; ?>
-</div>
 {% set associations = {'BelongsTo': [], 'HasOne': [], 'HasMany': [], 'BelongsToMany': []}|merge(associations) %}
 {% set fieldsData = Bake.getViewFieldsData(fields, schema, associations) %}
 {% set associationFields = fieldsData.associationFields %}
 {% set groupedFields = fieldsData.groupedFields %}
 {% set pK = '$' ~ singularVar ~ '->' ~ primaryKey[0] %}
-<div class="row">
-    <div class="col s12 m3">
-        <div class="card darken-1">
-            <div class="card-content white-text">
-                <span class="card-title green-text"><?= __('Actions') ?></span>
-                <div class="card-action">
-                    <li class="padding-action"><?= $this->Html->link(__('Edit {{ singularHumanName }}'), ['action' => 'edit', {{ pK|raw }}]) ?> </li>
-                    <li class="padding-action"><?= $this->Form->postLink(__('Delete {{ singularHumanName }}'), ['action' => 'delete', {{ pK|raw }}], ['confirm' => __('Are you sure you want to delete # {0}?', {{ pK|raw }})]) ?> </li>
-                    <li class="padding-action"><?= $this->Html->link(__('List {{ pluralHumanName }}'), ['action' => 'index']) ?> </li>
-                    <li class="padding-action"><?= $this->Html->link(__('New {{ singularHumanName }}'), ['action' => 'add']) ?> </li>
+<div class="fixed-action-btn click-to-toggle">
+    <a class="btn-floating btn-large red">
+        <i class="large material-icons">mode_edit</i>
+    </a>
+    <ul>
+        <li>
+            <?= $this->Html->link('<i class="material-icons">mode_edit</i>',
+                ['action' => 'edit', {{ pK|raw }}],
+                ['class' => 'btn-floating yellow tooltipped', 'data-position' => 'left', 'data-tooltip' =>  __('Edit {{ singularHumanName }}'), 'escape' => false]) ?>
+        </li>
+        <li>
+            <?= $this->Form->postLink('<i class="material-icons">delete</i>',
+                ['action' => 'delete', {{ pK|raw }}],
+                ['confirm' => __('Are you sure you want to delete # {0}?', {{ pK|raw }}),
+                'class' => 'btn-floating red tooltipped', 'data-position' => 'left', 'data-tooltip' =>  __('Delete {{ singularHumanName }}'), 'escape' => false]) ?>
+        </li>
+        <li>
+            <?= $this->Html->link('<i class="material-icons">list</i>',
+                ['action' => 'index'],
+                ['class' => 'btn-floating blue tooltipped', 'data-position' => 'left', 'data-tooltip' =>  __('List {{ pluralHumanName }}'), 'escape' => false]) ?>
+        </li>
+        <li>
+            <?= $this->Html->link('<i class="material-icons">add</i>',
+                ['action' => 'add'],
+                ['class' => 'btn-floating green tooltipped', 'data-position' => 'left', 'data-tooltip' =>  __('New {{ singularHumanName }}'), 'escape' => false]) ?>
+        </li>
 {% set done = [] %}
 {% for type, data in associations %}
 {% for alias, details in data %}
 {% if details.controller is not same as(_view.name) and details.controller not in done %}
-                    <li class="padding-action"><?= $this->Html->link(__('List {{ alias|underscore|humanize }}'), ['controller' => '{{ details.controller }}', 'action' => 'index']) ?> </li>
-                    <li class="padding-action"><?= $this->Html->link(__('New {{ alias|underscore|singularize|humanize }}'), ['controller' => '{{ details.controller }}', 'action' => 'add']) ?> </li>
+        <li>
+            <?= $this->Html->link('<i class="material-icons">list</i>',
+                ['controller' => '{{ details.controller }}', 'action' => 'index'],
+                ['class' => 'btn-floating orange tooltipped', 'data-position' => 'left', 'data-tooltip' =>  __('List {{ alias|underscore|humanize }}'), 'escape' => false]) ?>
+        </li>
+        <li>
+            <?= $this->Html->link('<i class="material-icons">add</i>',
+                ['controller' => '{{ details.controller }}', 'action' => 'add'],
+                ['class' => 'btn-floating orange tooltipped', 'data-position' => 'left', 'data-tooltip' =>  __('New {{ alias|underscore|singularize|humanize }}'), 'escape' => false]) ?>
+        </li>
 {% set done = done|merge(['controller']) %}
 {% endif %}
 {% endfor %}
 {% endfor %}
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col s12 m9">
-        <div class="card darken-1">
-            <div class="card-content black-text">
-                <ul class="collection with-header">
-                    <li class="collection-header">
-                        <h4><?= h(${{ singularVar }}->{{ displayField }}) ?></h4>
-                    </li>
+    </ul>
+</div>
+<div class="card darken-1 col s12 m10 offset-m2">
+    <div class="card-content black-text">
+        <span class="card-title green-text"><?= h(${{ singularVar }}->{{ displayField }}) ?></span>
+        <table class="striped bordered responsive-table">
+            <tbody>
 {% if groupedFields['string'] %}
 {% for field in groupedFields['string'] %}
 {% if associationFields[field] %}
 {% set details = associationFields[field] %}
-                    <li class="collection-item">
+                <tr>
+                    <td>
                         <?= __('{{ field|humanize }}') ?>
-                        <div class="secondary-content">
-                            <?= ${{ singularVar }}->has('{{ details.property }}') ? $this->Html->link(${{ singularVar }}->{{ details.property }}->{{ details.displayField }}, ['controller' => '{{ details.controller }}', 'action' => 'view', ${{ singularVar }}->{{ details.property }}->{{ details.primaryKey[0] }}]) : '' ?>
-                        </div>
-                    </li>
+                    </td>
+                    <td class="right">
+                        <?= ${{ singularVar }}->has('{{ details.property }}') ? $this->Html->link(${{ singularVar }}->{{ details.property }}->{{ details.displayField }}, ['controller' => '{{ details.controller }}', 'action' => 'view', ${{ singularVar }}->{{ details.property }}->{{ details.primaryKey[0] }}]) : '' ?>
+                    </td>
+                </tr>
 {% else %}
-                    <li class="collection-item">
+                <tr>
+                    <td>
                         <?= __('{{ field|humanize }}') ?>
-                        <div class="secondary-content">
-                            <?= h(${{ singularVar }}->{{ field }}) ?>
-                        </div>
-                    </li>
+                    </td>
+                    <td class="right">
+                        <?= h(${{ singularVar }}->{{ field }}) ?>
+                    </td>
+                </tr>
 {% endif %}
 {% endfor %}
 {% endif %}
 {% if associations.HasOne %}
 {% for alias, details in associations.HasOne %}
-                    <li class="collection-item">
+                <tr>
+                    <td>
                         <?= __('{{ alias|underscore|singularize|humanize }}') ?>
-                        <div class="secondary-content">
-                            <?= ${{ singularVar }}->has('{{ details.property }}') ? $this->Html->link(${{ singularVar }}->{{ details.property }}->{{ details.displayField }}, ['controller' => '{{ details.controller }}', 'action' => 'view', ${{ singularVar }}->{{ details.property }}->{{ details.primaryKey[0] }}]) : '' ?>
-                        </div>
-                    </li>
+                    </td>
+                    <td class="right">
+                        <?= ${{ singularVar }}->has('{{ details.property }}') ? $this->Html->link(${{ singularVar }}->{{ details.property }}->{{ details.displayField }}, ['controller' => '{{ details.controller }}', 'action' => 'view', ${{ singularVar }}->{{ details.property }}->{{ details.primaryKey[0] }}]) : '' ?>
+                    </td>
+                </tr>
 {% endfor %}
 {% endif %}
 {% if groupedFields.number %}
 {% for field in groupedFields.number %}
-                    <li class="collection-item">
+                <tr>
+                    <td>
                         <?= __('{{ field|humanize }}') ?>
-                        <div class="secondary-content">
-                            <?= $this->Number->format(${{ singularVar }}->{{ field }}) ?>
-                        </div>
-                    </li>
+                    </td>
+                    <td class="right">
+                        <?= $this->Number->format(${{ singularVar }}->{{ field }}) ?>
+                    </td>
+                </tr>
 {% endfor %}
 {% endif %}
 {% if groupedFields.date %}
 {% for field in groupedFields.date %}
-                    <li class="collection-item">
+                <tr>
+                    <td>
                         <?= __('{{ field|humanize }}') ?>
-                        <div class="secondary-content">
-                            <?= h(${{ singularVar }}->{{ field }}) ?>
-                        </div>
-                    </li>
+                    </td>
+                    <td class="right">
+                        <?= h(${{ singularVar }}->{{ field }}->format('d/m/Y H:i')) ?>
+                    </td>
+                </tr>
 {% endfor %}
 {% endif %}
 {% if groupedFields.boolean %}
 {% for field in groupedFields.boolean %}
-                    <li class="collection-item">
+                <tr>
+                    <td>
                         <?= __('{{ field|humanize }}') ?>
-                        <div class="secondary-content">
-                            <?= ${{ singularVar }}->{{ field }} ? '<i class="material-icons" title="'. __("Yes") . '">check</i>'  : '<i class="material-icons" title="'. __("No") . '">close</i>'; ?>
-                        </div>
-                    </li>
+                    </td>
+                    <td class="right">
+                        <?= ${{ singularVar }}->{{ field }} ? '<i class="material-icons" title="'. __("Yes") . '">check</i>'  : '<i class="material-icons" title="'. __("No") . '">close</i>'; ?>
+                    </td>
+                </tr>
 {% endfor %}
 {% endif %}
 {% if groupedFields.text %}
 {% for field in groupedFields.text %}
-                    <li class="collection-item">
+                <tr>
+                    <td>
                         <?= __('{{ field|humanize }}') ?>
-                        <div class="secondary-content">
-                            <?= $this->Text->autoParagraph(h(${{ singularVar }}->{{ field }})); ?>
-                        </div>
-                    </li>
+                    </td>
+                    <td class="right">
+                        <?= $this->Text->autoParagraph(h(${{ singularVar }}->{{ field }})); ?>
+                    </td>
+                </tr>
 {% endfor %}
 {% endif %}
-                </ul>
+            </tbody>
+        </table>
 {% set relations = associations.BelongsToMany|merge(associations.HasMany) %}
 {% for alias, details in relations %}
 {% set otherSingularVar = alias|variable %}
 {% set otherPluralHumanName = details.controller|underscore|humanize %}
-                <div class="card-content black-text">
-                    <div class="green-text"><h5><?= __('Related {{ otherPluralHumanName }}') ?></h5></div>
-                    <div class="collapsible-header"></div>
-                    <?php if (!empty(${{ singularVar }}->{{ details.property }})): ?>
+        <?php if (!empty(${{ singularVar }}->{{ details.property }})): ?>
+            <div class="card-content black-text">
+                <div class="green-text"><h5><?= __('Related {{ otherPluralHumanName }}') ?></h5></div>
+                <div class="collapsible-header"></div>
                     <table class="striped responsive-table">
                         <thead>
                             <tr>
 {% for field in details.fields %}
-                                <th scope="col"><?= __('{{ field|humanize }}') ?></th>
+                            <th scope="col"><?= __('{{ field|humanize }}') ?></th>
 {% endfor %}
-                                <th><?= __('Actions') ?></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        <?php foreach (${{ singularVar }}->{{ details.property }} as ${{ otherSingularVar }}): ?>
-                            <tr>
+                            <th><?= __('Actions') ?></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach (${{ singularVar }}->{{ details.property }} as ${{ otherSingularVar }}): ?>
+                        <tr>
 {% for field in details.fields %}
-                                <td><?= h(${{ otherSingularVar }}->{{ field }}) ?></td>
+                            <td><?= h(${{ otherSingularVar }}->{{ field }}) ?></td>
 {% endfor %}
 {% set otherPk = '$' ~ otherSingularVar ~ '->' ~ details.primaryKey[0] %}
-                                <td><?= $product->has('category') ? $this->Html->link($product->category->name, ['controller' => 'Categories', 'action' => 'view', $product->category->id]) : '' ?></td>
-                                <td>
-                                <td>
-                                    <?= $this->Html->link('<i class="material-icons" title="'. __('View') . '" >zoom_in</i>', ['controller' => '{{ details.controller }}', 'action' => 'view', {{ otherPk|raw }}]) ?>
-                                    <?= $this->Html->link('<i class="material-icons" title="'. __('Edit') . '" >create</i>', ['controller' => '{{ details.controller }}', 'action' => 'edit', {{ otherPk|raw }}]) ?>
-                                    <?= $this->Form->postLink('<i class="material-icons" title="'. __('Delete') . '" >delete</i>', 'action' => 'delete', {{ otherPk|raw }}], ['confirm' => __('Are you sure you want to delete # {0}?', {{ otherPk|raw }})]) ?>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
+                            <td><?= $product->has('category') ? $this->Html->link($product->category->name, ['controller' => 'Categories', 'action' => 'view', $product->category->id]) : '' ?></td>
+                            <td>
+                            <td>
+                                <?= $this->Html->link('<i class="material-icons tiny-custom black-text" title="'. __('View') . '" >zoom_in</i>', ['controller' => '{{ details.controller }}', 'action' => 'view', {{ otherPk|raw }}]) ?>
+                                <?= $this->Html->link('<i class="material-icons tiny-custom black-text" title="'. __('Edit') . '" >create</i>', ['controller' => '{{ details.controller }}', 'action' => 'edit', {{ otherPk|raw }}]) ?>
+                                <?= $this->Form->postLink('<i class="material-icons tiny-custom black-text" title="'. __('Delete') . '" >delete</i>', ['action' => 'delete', {{ otherPk|raw }}], ['confirm' => __('Are you sure you want to delete # {0}?', {{ otherPk|raw }})]) ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
             </div>
-{% endfor %}
-        </div>
+        <?php endif; ?>
     </div>
+{% endfor %}
 </div>

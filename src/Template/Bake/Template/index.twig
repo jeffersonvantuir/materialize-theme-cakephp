@@ -9,88 +9,93 @@
  * @var \{{ namespace }}\View\AppView $this
  * @var \{{ entityClass }}[]|\Cake\Collection\CollectionInterface ${{ pluralVar }}
  */
+
+ $this->layout = "Soils.soils";
+
 ?>
-<div class="hide">
-    <?= $this->layout = "Materialize.materialize"; ?>
-</div>
 {% set fields = Bake.filterFields(fields, schema, modelObject, indexColumns, ['binary', 'text']) %}
-<div class="row">
-    <div class="col s12 m3">
-        <div class="card darken-1">
-            <div class="card-content white-text">
-                <span class="card-title green-text">Actions</span>
-                <div class="card-action">
-                    <li class="padding-action"><?= $this->Html->link(__('New {{ singularHumanName }}'), ['action' => 'add']) ?></li>
+<div class="fixed-action-btn click-to-toggle">
+    <a class="btn-floating btn-large red">
+        <i class="large material-icons">mode_edit</i>
+    </a>
+    <ul>
+        <li>
+            <?= $this->Html->link('<i class="material-icons">add</i>',
+            ['action' => 'add'],
+            ['class' => 'btn-floating green', 'title' => __('New {{ singularHumanName }}'), 'escape' => false]) ?>
+        </li>
 {% set done = [] %}
 {% for type, data in associations %}
 {% for alias, details in data %}
 {% if details.navLink and details.controller is not same as(_view.name) and details.controller not in done %}
-                    <li class="padding-action"><?= $this->Html->link(__('List {{ alias|underscore|humanize }}'), ['controller' => '{{ details.controller }}', 'action' => 'index']) ?></li>
-                    <li class="padding-action"><?= $this->Html->link(__('New {{ alias|singularize|underscore|humanize }}'), ['controller' => '{{ details.controller }}', 'action' => 'add']) ?></li>
+        <li>
+            <?= $this->Html->link('<i class="material-icons">list</i>',
+            ['controller' => '{{ details.controller }}', 'action' => 'index'],
+            ['class' => 'btn-floating orange darken-1', 'title' => __('List {{ alias|underscore|humanize }}'), 'escape' => false]) ?>
+        </li>
+        <li>
+            <?= $this->Html->link('<i class="material-icons">add</i>',
+            ['controller' => '{{ details.controller }}', 'action' => 'add'],
+            ['class' => 'btn-floating orange darken-1', 'title' => __('New {{ alias|singularize|underscore|humanize }}'), 'escape' => false]) ?>
+        </li>
 {% set done = done|merge([details.controller]) %}
 {% endif %}
 {% endfor %}
 {% endfor %}
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col s12 m9">
-        <div class="card darken-1">
-            <div class="card-content black-text">
-                <span class="card-title green-text"><?= __('{{ pluralHumanName }}') ?></span>
-                <table class="responsive-table">
-                    <thead>
-                        <tr>
+    </ul>
+</div>
+<div class="card darken-1 col s12 m10 offset-m2">
+    <div class="card-content black-text">
+        <span class="card-title green-text"><?= __('{{ pluralHumanName }}') ?></span>
+        <table class="striped responsive-table">
+            <thead>
+                <tr>
 {% for field in fields %}
-                            <th scope="col"><?= $this->Paginator->sort('{{ field }}') ?></th>
+                    <th><?= $this->Paginator->sort('{{ field }}') ?></th>
 {% endfor %}
-                            <th><?= __('Actions') ?></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <?php foreach (${{ pluralVar }} as ${{ singularVar }}): ?>
-                        <tr>
+                    <th><?= __('Actions') ?></th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php foreach (${{ pluralVar }} as ${{ singularVar }}): ?>
+                <tr>
 {% for field in fields %}
 {% set isKey = false %}
 {% if associations.BelongsTo %}
 {% for alias, details in associations.BelongsTo if field == details.foreignKey %}
 {% set isKey = true %}
-                            <td><?= ${{ singularVar }}->has('{{ details.property }}') ? $this->Html->link(${{ singularVar }}->{{ details.property }}->{{ details.displayField }}, ['controller' => '{{ details.controller }}', 'action' => 'view', ${{ singularVar }}->{{ details.property }}->{{ details.primaryKey[0] }}]) : '' ?></td>
+                    <td><?= ${{ singularVar }}->has('{{ details.property }}') ? $this->Html->link(${{ singularVar }}->{{ details.property }}->{{ details.displayField }}, ['controller' => '{{ details.controller }}', 'action' => 'view', ${{ singularVar }}->{{ details.property }}->{{ details.primaryKey[0] }}]) : '' ?></td>
 {% endfor %}
 {% endif %}
 {% if isKey is not same as(true) %}
 {% set columnData = Bake.columnData(field, schema) %}
 {% if columnData.type not in ['integer', 'float', 'decimal', 'biginteger', 'smallinteger', 'tinyinteger'] %}
-                            <td><?= h(${{ singularVar }}->{{ field }}) ?></td>
+                    <td><?= h(${{ singularVar }}->{{ field }}) ?></td>
 {% else %}
-                            <td><?= $this->Number->format(${{ singularVar }}->{{ field }}) ?></td>
+                    <td><?= $this->Number->format(${{ singularVar }}->{{ field }}) ?></td>
 {% endif %}
 {% endif %}
 {% endfor %}
 {% set pk = '$' ~ singularVar ~ '->' ~ primaryKey[0] %}
-                            <td>
-                                <?= $this->Html->link('<i class="material-icons" title="'. __('View') . '" >zoom_in</i>', ['action' => 'view', {{ pk|raw }}], ['escape' => false]) ?>
-                                <?= $this->Html->link('<i class="material-icons" title="'. __('Edit') . '" >create</i>', ['action' => 'edit', {{ pk|raw }}], ['escape' => false]) ?>
-                                <?= $this->Form->postLink('<i class="material-icons" title="'. __('Delete') . '" >delete</i>', ['action' => 'delete', {{ pk|raw }}], ['confirm' => __('Are you sure you want to delete # {0}?', {{ pk|raw }}), 'escape' => false]) ?>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="center">
-            <ul class="pagination">
-                <?= $this->Paginator->first('<i class="material-icons">first_page</i>', ['class' => 'waves-effect', 'escape' => false]) ?>
-                <?= $this->Paginator->prev('<i class="material-icons">chevron_left</i>', ['class' => 'waves-effect', 'escape' => false]) ?>
-                <?= $this->Paginator->numbers() ?>
-                <?= $this->Paginator->next('<i class="material-icons">chevron_right</i>', ['class' => 'waves-effect', 'escape' => false]) ?>
-                <?= $this->Paginator->last('<i class="material-icons">last_page</i>', ['class' => 'waves-effect', 'escape' => false]) ?>
-            </ul>
-        </div>
-
-        <p class="right"><?= $this->Paginator->counter(['format' => __('Page {{page}} of {{pages}}, showing {{current}} record(s) out of {{count}} total')]) ?></p>
+                    <td>
+                        <?= $this->Html->link('<i class="material-icons tiny-custom black-text" title="'. __('View') . '" >zoom_in</i>', ['action' => 'view', {{ pk|raw }}], ['escape' => false]) ?>
+                        <?= $this->Html->link('<i class="material-icons tiny-custom black-text" title="'. __('Edit') . '" >create</i>', ['action' => 'edit', {{ pk|raw }}], ['escape' => false]) ?>
+                        <?= $this->Form->postLink('<i class="material-icons tiny-custom black-text" title="'. __('Delete') . '" >delete</i>', ['action' => 'delete', {{ pk|raw }}], ['confirm' => __('Are you sure you want to delete # {0}?', {{ pk|raw }}), 'escape' => false]) ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
     </div>
 </div>
+<div class="center col s12">
+    <ul class="pagination">
+        <?= $this->Paginator->first('<i class="material-icons">first_page</i>', ['class' => 'waves-effect', 'escape' => false]) ?>
+        <?= $this->Paginator->prev('<i class="material-icons">chevron_left</i>', ['class' => 'waves-effect', 'escape' => false]) ?>
+        <?= $this->Paginator->numbers() ?>
+        <?= $this->Paginator->next('<i class="material-icons">chevron_right</i>', ['class' => 'waves-effect', 'escape' => false]) ?>
+        <?= $this->Paginator->last('<i class="material-icons">last_page</i>', ['class' => 'waves-effect', 'escape' => false]) ?>
+    </ul>
+</div>
+
+<p class="right"><?= $this->Paginator->counter(['format' => __('Page {{ '{{' }}page{{ '}}' }} of {{ '{{' }}pages{{ '}}' }}, showing {{ '{{' }}current{{ '}}' }} record(s) out of {{ '{{' }}count{{ '}}' }} total')]) ?></p>

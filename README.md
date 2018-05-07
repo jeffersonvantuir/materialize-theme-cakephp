@@ -2,7 +2,7 @@
 
 ## *************** Em processo de Desenvolvimento ***************
 
-Última atualização 23/03/2018
+Última atualização 07/05/2018
 
 ## Instalação
 

@@ -1,102 +1,121 @@
-<div class="hide">
-    <?= $this->layout = "Materialize.materialize"; ?>
-</div>
 {% set fields = Bake.filterFields(fields, schema, modelObject) %}
-<div class="row">
-    <div class="col s12 m3">
-        <div class="card darken-1">
-            <div class="card-content white-text">
-                <span class="card-title green-text">Actions</span>
-                <div class="card-action">
+<div class="fixed-action-btn click-to-toggle">
+    <a class="btn-floating btn-large red">
+        <i class="large material-icons">mode_edit</i>
+    </a>
+    <ul>
 {% if strpos(action, 'add') is same as(false) %}
-                    <li class="padding-action"><?= $this->Form->postLink(
-                            __('Delete'),
-                            ['action' => 'delete', ${{ singularVar }}->{{ primaryKey[0] }}],
-                            ['confirm' => __('Are you sure you want to delete # {0}?', ${{ singularVar }}->{{ primaryKey[0] }})]
-                            )
-                            ?></li>
+        <li>
+            <?= $this->Form->postLink('<i class="material-icons">delete</i>',
+            ['action' => 'delete', ${{ singularVar }}->{{ primaryKey[0] }}],
+            ['confirm' => __('Are you sure you want to delete # {0}?', ${{ singularVar }}->{{ primaryKey[0] }}),
+            'class' => 'btn-floating red tooltipped', 'data-position' => 'left', 'data-tooltip' =>  __('Delete'), 'escape' => false]) ?>
+        </li>{{- "\n" }}
 {% endif %}
-                    <li class="padding-action"><?= $this->Html->link(__('List {{ pluralHumanName }}'), ['action' => 'index']) ?></li>{{- "\n" }}
+        <li>
+            <?= $this->Html->link('<i class="material-icons">list</i>',
+            ['action' => 'index'],
+            ['class' => 'btn-floating blue tooltipped', 'data-position' => 'left', 'data-tooltip' =>  __('List {{ pluralHumanName }}'), 'escape' => false]) ?>
+        </li>{{- "\n" }}
 {%- set done = [] %}
 {% for type, data in associations %}
 {%- for alias, details in data %}
 {%- if details.controller is not same as(_view.name) and details.controller not in done %}
-                    <li class="padding-action"><?= $this->Html->link(__('List {{ alias|underscore|humanize }}'), ['controller' => '{{ details.controller }}', 'action' => 'index']) ?></li>
-                    <li class="padding-action"><?= $this->Html->link(__('New {{ alias|singularize|underscore|humanize }}'), ['controller' => '{{ details.controller }}', 'action' => 'add']) ?></li>{{- "\n" }}
+        <li>
+            <?= $this->Html->link('<i class="material-icons">list</i>',
+            ['controller' => '{{ details.controller }}', 'action' => 'index'],
+            ['class' => 'btn-floating orange tooltipped', 'data-position' => 'left', 'data-tooltip' =>  __('List {{ alias|underscore|humanize }}'), 'escape' => false]) ?>
+        </li>
+        <li>
+            <?= $this->Html->link('<i class="material-icons">add</i>',
+            ['controller' => '{{ details.controller }}', 'action' => 'add'],
+            ['class' => 'btn-floating orange tooltipped', 'data-position' => 'left', 'data-tooltip' =>  __('New {{ alias|singularize|underscore|humanize }}'), 'escape' => false]) ?>
+        </li>{{- "\n" }}
 {%- set done = done|merge([details.controller]) %}
 {%- endif %}
 {%- endfor %}
 {% endfor %}
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col s12 m9">
-        <div class="card darken-1">
-            <div class="card-content black-text">
-                <?= $this->Form->create(${{ singularVar }}) ?>
-                <span class="card-title green-text"><?= __('{{ action|humanize }} {{ singularHumanName }}') ?></span>{{- "\n" }}
+    </ul>
+</div>
+<div class="card darken-1 col s12 m10 offset-m2">
+    <div class="card-content black-text">
+        <?= $this->Form->create(${{ singularVar }}) ?>
+        <span class="card-title green-text"><?= __('{{ action|humanize }} {{ singularHumanName }}') ?></span>
+        <div class="row">
 {% for field in fields if field not in primaryKey %}
 {%- if keyFields[field] %}
 {%- set fieldData = Bake.columnData(field, schema) %}
 {%- if fieldData.null %}
+            <div class="col s12 m6 l6">
                 <div class="input-field">
                     <?= $this->Form->control('{{ field }}', ['options' => ${{ keyFields[field] }}, 'empty' => true]) ?>
-                </div>{{- "\n" }}
+                </div>
+            </div>{{- "\n" }}
 {%- else %}
-                <div class="input-field col s12">
+            <div class="col s12 m6 l6">
+                <div class="input-field">
                     <?= $this->Form->control('{{ field }}', ['options' => ${{ keyFields[field] }}]) ?>
-                </div>{{- "\n" }}
+                </div>
+            </div>{{- "\n" }}
 {%- endif %}
 {%- elseif field not in ['created', 'modified', 'updated'] %}
 {%- set fieldData = Bake.columnData(field, schema) %}
 {%- if fieldData.type in ['date', 'datetime', 'time'] and fieldData.null %}
 {% if fieldData.type == 'date' %}
+            <div class="col s12 m6 l6">
                 <div class="input-field">
                     <?= $this->Form->control('{{ field }}', ['type' => 'text', 'class' => 'datepicker']) ?>
-                </div>{{- "\n" }}
+                </div>
+            </div>{{- "\n" }}
 {% elseif fieldData.type == 'time' %}
+            <div class="col s12 m6 l6">
                 <div class="input-field">
                     <?= $this->Form->control('{{ field }}', ['type' => 'text', 'class' => 'timepicker']) ?>
-                </div>{{- "\n" }}
+                </div>
+            </div>{{- "\n" }}
 {%- else %}
-                <div class="col">
-                    <?= $this->Form->control('{{ field }}', ['empty' => true]) ?>
-                </div>{{- "\n" }}
+            <div class="col s12 m6 l6">
+                <?= $this->Form->control('{{ field }}', ['empty' => true]) ?>
+            </div>{{- "\n" }}
 {%- endif %}
 {%- elseif fieldData.type == 'boolean' %}
-                <?= $this->Form->control('{{ field }}', ['type' => 'checkbox', 'class' => 'filled-in']) ?>{{- "\n" }}
+            <?= $this->Form->control('{{ field }}', ['type' => 'checkbox', 'class' => 'filled-in']) ?>{{- "\n" }}
 {%- elseif fieldData.type == 'text' %}
-                <div class="row">
-                    <form class="col s12">
-                        <div class="row">
-                            <div class="input-field col s12">
-                                <?= $this->Form->control('{{ field }}', ['class' => 'materialize-textarea']) ?>
-                            </div>
-                        </div>
-                    </form>
-                </div>{{- "\n" }}
+            <div class="col s12 m12 l12">
+                <div class="input-field">
+                    <?= $this->Form->control('{{ field }}', ['class' => 'materialize-textarea']) ?>
+                </div>
+            </div>{{- "\n" }}
 {%- else %}
 {% if field == 'email' %}
+            <div class="col s12 m6 l6">
                 <div class="input-field">
                     <?= $this->Form->control('{{ field }}', ['type' => 'email', 'class' => 'validate']) ?>
-                </div>{{- "\n" }}
+                </div>
+            </div>{{- "\n" }}
 {%- else %}
+            <div class="col s12 m6 l6">
                 <div class="input-field">
                     <?= $this->Form->control('{{ field }}') ?>
-                </div>{{- "\n" }}
+                </div>
+            </div>{{- "\n" }}
 {%- endif %}
 {%- endif %}
 {%- endif %}
 {%- endfor %}
 {%- if associations.BelongsToMany %}
 {%- for assocName, assocData in associations.BelongsToMany %}
+            <div class="col s12 m6 l6">
                 <div class="input-field">
                     <?= $this->Form->control('{{ assocData.property }}._ids', ['options' => ${{ assocData.variable }}]) ?>{{- "\n" }}
-                </div>{{- "\n" }}
+                </div>
+            </div>{{- "\n" }}
 {%- endfor %}
 {% endif %}
-                <?= $this->Form->button(__('Submit'), ['class' => 'btn waves-effect waves-light']) ?>
+        </div>
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <?= $this->Form->button(__('Submit'), ['class' => 'btn waves-effect waves-light col s12 m3 l3 offset-s0 offset-m9 offset-l9 green-background']) ?>
                 <?= $this->Form->end() ?>
             </div>
         </div>
