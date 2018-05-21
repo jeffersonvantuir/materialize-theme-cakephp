@@ -51,5 +51,7 @@ public function beforeRender(Event $event)
 {
     parent::beforeRender($event);
     $this->viewBuilder()->setHelpers(['Materialize.Form']);
+    
+    $this->viewBuilder()->layout('Materialize.materialize');
 }
 ```
