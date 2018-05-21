@@ -6,6 +6,13 @@
 
 ## Instalação
 
+##### *Versão recomendada do CakePHP 3.5*
+
+```
+composer create-project --prefer-dist cakephp/app=3.5.0 app
+```
+
+
 Dentro do seu projeto, execute:
 ```
 composer require jeffersonbehling/materialize-theme-cakephp:dev-master
